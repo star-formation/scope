@@ -8,7 +8,7 @@ extends Spatial
 
 # Called when the node enters the scene tree for the first time.
 func _ready():
-	get_node("Camera").set_privot(get_node("CSGSphere"))
+	get_node("Camera").set_privot(get_node("Planet"))
 
 
 # Called every frame. 'delta' is the elapsed time since the previous frame.

@@ -4,12 +4,12 @@ extends Camera
 export (float, 0.0, 1.0) var sensitivity = 0.5
 export (float, 0.0, 0.999, 0.001) var smoothness = 0.5 setget set_smoothness
 export(NodePath) var privot setget set_privot
-export var distance = 5.0 setget set_distance
+export var distance = 60.0 setget set_distance
 export (int, 0, 360) var yaw_limit = 360
 export (int, 0, 360) var pitch_limit = 360
 
-export var zoomStep = 0.2
-export var default_distance = 6.0
+export var zoomStep = 0.4
+export var default_distance = 20.0
 
 # internal variables
 var _yaw = 0.0
