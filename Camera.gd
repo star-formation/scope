@@ -4,12 +4,12 @@ extends Camera
 export (float, 0.0, 1.0) var sensitivity = 0.5
 export (float, 0.0, 0.999, 0.001) var smoothness = 0.5 setget set_smoothness
 export(NodePath) var privot setget set_privot
-export var distance = 60.0 setget set_distance
+export var distance = 12000.0 setget set_distance
 export (int, 0, 360) var yaw_limit = 360
 export (int, 0, 360) var pitch_limit = 360
 
-export var zoomStep = 0.4
-export var default_distance = 20.0
+export var zoomStep = 100
+#export var default_distance = 200.0
 
 # internal variables
 var _yaw = 0.0
@@ -17,13 +17,14 @@ var _pitch = 0.0
 var _total_yaw = 0.0
 var _total_pitch = 0.0
 var _mouse_pos = Vector2(0.0,0.0)
+var _key_pos = Vector2(0.0,0.0)
 var _camera_drag = false
 
 # Called when the node enters the scene tree for the first time.
 func _ready():
 	pass
 
-func _input_event(event):
+func _input_event(_event):
 	pass
 	
 	#if event is InputEventMouseButton:
@@ -31,6 +32,22 @@ func _input_event(event):
 	#		_camera_drag = event.pressed
 
 func _input(event):
+	if event is InputEventKey and event.pressed:
+		match event.scancode:
+			KEY_UP:
+				_key_pos.y = 10.0
+			KEY_DOWN:
+				_key_pos.y = -10.0
+			KEY_LEFT:
+				_key_pos.x = 10.0
+			KEY_RIGHT:
+				_key_pos.x = -10.0
+			KEY_PAGEUP:
+				distance -= zoomStep * 4.0
+			KEY_PAGEDOWN:
+				distance += zoomStep * 4.0
+				
+	
 	if event is InputEventMouseMotion:
 		if _camera_drag:
 			_mouse_pos = event.relative
@@ -54,9 +71,10 @@ func _update_process_func():
 	set_process(true)
 
 func _update_view():
-	_yaw = _yaw * smoothness + _mouse_pos.x * sensitivity * (1.0 - smoothness)
-	_pitch = _pitch * smoothness + _mouse_pos.y * sensitivity * (1.0 - smoothness)
+	_yaw = _yaw * smoothness + (_mouse_pos.x + _key_pos.x) * sensitivity * (1.0 - smoothness)
+	_pitch = _pitch * smoothness + (_mouse_pos.y + _key_pos.y) * sensitivity * (1.0 - smoothness)
 	_mouse_pos = Vector2(0.0,0.0)
+	_key_pos = Vector2(0.0,0.0)
 	
 	if yaw_limit < 360:
 		_yaw = clamp(_yaw, -yaw_limit - _total_yaw, yaw_limit - _total_yaw)
